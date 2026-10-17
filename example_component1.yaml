@@ -1,0 +1,22 @@
+substitutions:
+  name: "ac-remote"
+  friendly_name: "Project Template"
+
+esphome:
+  name: "${name}"
+
+esp32:
+  variant: esp32
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+climate:
+  - platform: climate_ir_electra
+    name: "AC"
+
+remote_transmitter:
+  pin: GPIO4 # Change this to the actual pin your IR LED is connected to
+  carrier_duty_percent: 50% # Optional, but recommended for most IR transmitters
