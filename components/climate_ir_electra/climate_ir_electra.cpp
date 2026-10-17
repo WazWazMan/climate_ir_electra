@@ -3,7 +3,8 @@
 
 namespace esphome::climate_ir_electra
 {
-    ESPHOME_LOG_TAG(TAG, "climate.climate_ir_electra");
+    // ESPHOME_LOG_TAG(TAG, "climate.climate_ir_electra");
+    static const char *const TAG = "climate.climate_ir_electra";
     void ElectraIrClimate::transmit_state()
     {
         const bool climate_is_off = (this->mode == climate::CLIMATE_MODE_OFF);
