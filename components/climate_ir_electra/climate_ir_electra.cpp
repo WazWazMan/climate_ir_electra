@@ -46,6 +46,7 @@ namespace esphome::climate_ir_electra
         data->mark(this->header_end_);
         transmit.perform();
 
+        
         this->publish_state();
     }
 }
