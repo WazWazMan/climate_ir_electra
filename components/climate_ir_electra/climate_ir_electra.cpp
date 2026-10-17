@@ -1,5 +1,7 @@
 #include "climate_ir_electra.h"
+#include "esphome/core/log.h"
 
+ESPHOME_LOG_TAG(TAG, "climate.climate_ir_electra");
 namespace esphome::climate_ir_electra
 {
     void ElectraIrClimate::transmit_state()
@@ -14,6 +16,8 @@ namespace esphome::climate_ir_electra
         {
             this->electraRemoteProtocol.set_power(ElectraRemoteProtocol::POWER::POWER_ON);
         }
+
+        ESP_LOGD(TAG, "climate_lg_ir mode code: 0x%02X", this->mode);
 
         auto signal = this->electraRemoteProtocol.get_signal();
         auto bytes_count = signal.size();
@@ -46,7 +50,7 @@ namespace esphome::climate_ir_electra
         data->mark(this->header_end_);
         transmit.perform();
 
-        
+
         this->publish_state();
     }
 }
