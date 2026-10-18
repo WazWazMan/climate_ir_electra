@@ -115,7 +115,7 @@ std::vector<uint8_t> ElectraRemoteProtocol::ElectraRemoteProtocol::get_signal() 
         checksum += reverse_Uint8_t(signal_bytes[i]);
     }
 
-    signal_bytes[12] = checksum;
+    signal_bytes[12] = reverse_Uint8_t(checksum);
 
     return signal_bytes;
 }
