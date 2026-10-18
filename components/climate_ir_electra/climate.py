@@ -16,7 +16,6 @@ CONF_HEADER_LOW = "header_low"
 CONF_BIT_HIGH = "bit_high"
 CONF_BIT_ONE_LOW = "bit_one_low"
 CONF_BIT_ZERO_LOW = "bit_zero_low"
-CONF_HEADER_END = "header_end"
 
 
 CONFIG_SCHEMA = climate_ir.climate_ir_with_receiver_schema(ElectraIrClimateComponent).extend(
@@ -48,4 +47,3 @@ async def to_code(config: ConfigType) -> None:
     cg.add(var.set_bit_high(config[CONF_BIT_HIGH]))
     cg.add(var.set_bit_one_low(config[CONF_BIT_ONE_LOW]))
     cg.add(var.set_bit_zero_low(config[CONF_BIT_ZERO_LOW]))
-    cg.add(var.set_header_end(config[CONF_HEADER_END]))
