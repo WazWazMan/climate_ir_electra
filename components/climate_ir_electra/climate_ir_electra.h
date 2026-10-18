@@ -21,7 +21,6 @@ namespace esphome::climate_ir_electra
         void set_bit_high(uint32_t bit_high) { this->bit_high_ = bit_high; }
         void set_bit_one_low(uint32_t bit_one_low) { this->bit_one_low_ = bit_one_low; }
         void set_bit_zero_low(uint32_t bit_zero_low) { this->bit_zero_low_ = bit_zero_low; }
-        void set_header_end(uint32_t header_end) { this->header_end_ = header_end; }
 
     protected:
         /// Transmit via IR the state of this climate controller.
@@ -34,6 +33,5 @@ namespace esphome::climate_ir_electra
         uint32_t bit_high_;
         uint32_t bit_one_low_;
         uint32_t bit_zero_low_;
-        uint32_t header_end_;
     };
 }

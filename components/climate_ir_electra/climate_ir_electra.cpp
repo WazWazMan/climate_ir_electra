@@ -48,7 +48,7 @@ namespace esphome::climate_ir_electra
         }
 
         // might be wrong 3.0 bs 690
-        data->mark(this->header_end_);
+        data->mark(this->bit_zero_low_);
         transmit.perform();
 
 

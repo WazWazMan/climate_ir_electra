@@ -36,9 +36,6 @@ CONFIG_SCHEMA = climate_ir.climate_ir_with_receiver_schema(ElectraIrClimateCompo
         cv.Optional(
             CONF_BIT_ZERO_LOW, default="630us"
         ): cv.positive_time_period_microseconds,
-        cv.Optional(
-            CONF_HEADER_END, default="690us"
-        ): cv.positive_time_period_microseconds,
     }
 )
 
