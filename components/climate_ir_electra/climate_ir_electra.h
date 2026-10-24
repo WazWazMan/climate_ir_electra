@@ -17,7 +17,7 @@ namespace esphome::climate_ir_electra
         ElectraIrClimate() : climate_ir::ClimateIR(TEMP_MIN, TEMP_MAX, 1.0f, true, true, {climate::CLIMATE_FAN_AUTO, climate::CLIMATE_FAN_LOW, climate::CLIMATE_FAN_MEDIUM, climate::CLIMATE_FAN_HIGH},
                                                    {climate::CLIMATE_SWING_OFF, climate::CLIMATE_SWING_BOTH, climate::CLIMATE_SWING_VERTICAL, climate::CLIMATE_SWING_HORIZONTAL})
         {
-            this->set_supports_heat_cool(false);
+            this->set_mode_supported_(climate::CLIMATE_MODE_HEAT_COOL, false);
         }
 
         void set_header_high(uint32_t header_high) { this->header_high_ = header_high; }
