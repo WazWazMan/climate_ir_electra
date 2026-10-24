@@ -2,6 +2,7 @@
 
 #include "esphome/components/climate_ir/climate_ir.h"
 #include "electra_remote_protocol.h"
+#include <set>
 
 namespace esphome::climate_ir_electra
 {
@@ -13,8 +14,11 @@ namespace esphome::climate_ir_electra
     class ElectraIrClimate final : public esphome::climate_ir::ClimateIR
     {
     public:
-        ElectraIrClimate() : climate_ir::ClimateIR(TEMP_MIN, TEMP_MAX, 1.0f, true, true ,{climate::CLIMATE_FAN_AUTO, climate::CLIMATE_FAN_LOW, climate::CLIMATE_FAN_MEDIUM, climate::CLIMATE_FAN_HIGH},
-                                                   {climate::CLIMATE_SWING_OFF, climate::CLIMATE_SWING_BOTH, climate::CLIMATE_SWING_VERTICAL, climate::CLIMATE_SWING_HORIZONTAL}) {}
+        ElectraIrClimate() : climate_ir::ClimateIR(TEMP_MIN, TEMP_MAX, 1.0f, true, true, {climate::CLIMATE_FAN_AUTO, climate::CLIMATE_FAN_LOW, climate::CLIMATE_FAN_MEDIUM, climate::CLIMATE_FAN_HIGH},
+                                                   {climate::CLIMATE_SWING_OFF, climate::CLIMATE_SWING_BOTH, climate::CLIMATE_SWING_VERTICAL, climate::CLIMATE_SWING_HORIZONTAL})
+        {
+            this->set_supports_heat_cool(false);
+        }
 
         void set_header_high(uint32_t header_high) { this->header_high_ = header_high; }
         void set_header_low(uint32_t header_low) { this->header_low_ = header_low; }

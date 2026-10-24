@@ -1,6 +1,5 @@
 #include "climate_ir_electra.h"
 #include "esphome/core/log.h"
-
 namespace esphome::climate_ir_electra
 {
     // ESPHOME_LOG_TAG(TAG, "climate.climate_ir_electra");
@@ -16,12 +15,110 @@ namespace esphome::climate_ir_electra
         else
         {
             this->electraRemoteProtocol.set_power(ElectraRemoteProtocol::POWER::POWER_ON);
+
+            switch (this->mode)
+            {
+            case climate::CLIMATE_MODE_COOL:
+                this->electraRemoteProtocol.set_mode(ElectraRemoteProtocol::MODE::MODE_COOL);
+                break;
+
+            case climate::CLIMATE_MODE_HEAT:
+                this->electraRemoteProtocol.set_mode(ElectraRemoteProtocol::MODE::MODE_HEAT);
+                break;
+            case climate::CLIMATE_MODE_AUTO:
+                this->electraRemoteProtocol.set_mode(ElectraRemoteProtocol::MODE::MODE_AUTO);
+                break;
+            case climate::CLIMATE_MODE_DRY:
+                this->electraRemoteProtocol.set_mode(ElectraRemoteProtocol::MODE::MODE_DRY);
+                break;
+            case climate::CLIMATE_MODE_FAN_ONLY:
+                this->electraRemoteProtocol.set_mode(ElectraRemoteProtocol::MODE::MODE_FAN);
+                break;
+            default:
+                break;
+            }
         }
 
-        ESP_LOGD(TAG, "climate_lg_ir mode code: 0x%02X", this->mode);
+        if (this->fan_mode.has_value())
+        {
+            switch (this->fan_mode.value())
+            {
+            case climate::CLIMATE_FAN_AUTO:
+                this->electraRemoteProtocol.set_fan_speed(ElectraRemoteProtocol::FAN_SPEED::FAN_AUTO);
+                break;
+
+            case climate::CLIMATE_FAN_LOW:
+                this->electraRemoteProtocol.set_fan_speed(ElectraRemoteProtocol::FAN_SPEED::FAN_LOW);
+                break;
+
+            case climate::CLIMATE_FAN_MEDIUM:
+                this->electraRemoteProtocol.set_fan_speed(ElectraRemoteProtocol::FAN_SPEED::FAN_MEDIUM);
+                break;
+
+            case climate::CLIMATE_FAN_HIGH:
+                this->electraRemoteProtocol.set_fan_speed(ElectraRemoteProtocol::FAN_SPEED::FAN_HIGH);
+                break;
+            default:
+                break;
+            }
+        }
+
+        switch (this->swing_mode)
+        {
+        case climate::CLIMATE_SWING_OFF:
+            this->electraRemoteProtocol.set_swing1(ElectraRemoteProtocol::SWING1::SWING_OFF);
+            this->electraRemoteProtocol.set_swing2(ElectraRemoteProtocol::SWING2::SWING_OFF);
+            break;
+
+        case climate::CLIMATE_SWING_VERTICAL:
+            this->electraRemoteProtocol.set_swing1(ElectraRemoteProtocol::SWING1::SWING_ON);
+            this->electraRemoteProtocol.set_swing2(ElectraRemoteProtocol::SWING2::SWING_OFF);
+            break;
+
+        case climate::CLIMATE_SWING_HORIZONTAL:
+            this->electraRemoteProtocol.set_swing1(ElectraRemoteProtocol::SWING1::SWING_OFF);
+            this->electraRemoteProtocol.set_swing2(ElectraRemoteProtocol::SWING2::SWING_ON);
+            break;
+
+        case climate::CLIMATE_SWING_BOTH:
+            this->electraRemoteProtocol.set_swing1(ElectraRemoteProtocol::SWING1::SWING_ON);
+            this->electraRemoteProtocol.set_swing2(ElectraRemoteProtocol::SWING2::SWING_ON);
+            break;
+
+        default:
+            break;
+        }
+
+        uint8_t temp = static_cast<uint8_t>(roundf(clamp<float>(this->target_temperature, TEMP_MIN, TEMP_MAX)));
+
+        auto temp_enum = static_cast<ElectraRemoteProtocol::TEMPERATURE>(
+            static_cast<int>(ElectraRemoteProtocol::TEMPERATURE::TEMP_16) + (temp - static_cast<int>(TEMP_MIN)));
+
+        this->electraRemoteProtocol.set_temperature(temp_enum);
 
         auto signal = this->electraRemoteProtocol.get_signal();
         auto bytes_count = signal.size();
+
+        std::string payload_str = "";
+        for (size_t i = 0; i < bytes_count; i++)
+        {
+            for (int j = 7; j >= 0; j--)
+            {
+                payload_str += ((signal[i] >> j) & 1) ? "1" : "0";
+            }
+            payload_str += " "; // Space between each byte
+        }
+        ESP_LOGD(TAG, "Sending Electra IR State:");
+        ESP_LOGD(TAG, "  Power: %s", climate_is_off ? "OFF" : "ON");
+        ESP_LOGD(TAG, "  Mode: %d", this->mode);
+        ESP_LOGD(TAG, "  Temp: %d C", temp);
+        if (this->fan_mode.has_value())
+        {
+            ESP_LOGD(TAG, "  Fan: %d", this->fan_mode.value());
+        }
+        ESP_LOGD(TAG, "  Swing: %d", this->swing_mode);
+        ESP_LOGD(TAG, "  Payload Code: %s", payload_str.c_str());
+        ESP_LOGD(TAG, "  Payload Size: %zu bytes", bytes_count);
 
         auto transmit = this->transmitter_->transmit();
         auto *data = transmit.get_data();
@@ -47,10 +144,8 @@ namespace esphome::climate_ir_electra
             }
         }
 
-        // might be wrong 3.0 bs 690
         data->mark(this->bit_zero_low_);
         transmit.perform();
-
 
         this->publish_state();
     }
