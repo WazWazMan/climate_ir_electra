@@ -91,8 +91,65 @@ namespace esphome::climate_ir_electra
 
         uint8_t temp = static_cast<uint8_t>(roundf(clamp<float>(this->target_temperature, TEMP_MIN, TEMP_MAX)));
 
-        auto temp_enum = static_cast<ElectraRemoteProtocol::TEMPERATURE>(
-            static_cast<int>(ElectraRemoteProtocol::TEMPERATURE::TEMP_16) + (temp - static_cast<int>(TEMP_MIN)));
+        ElectraRemoteProtocol::TEMPERATURE temp_enum;
+
+        switch (temp)
+        {
+        case 16:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_16;
+            break;
+        case 17:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_17;
+            break;
+        case 18:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_18;
+            break;
+        case 19:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_19;
+            break;
+        case 20:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_20;
+            break;
+        case 21:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_21;
+            break;
+        case 22:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_22;
+            break;
+        case 23:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_23;
+            break;
+        case 24:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_24;
+            break;
+        case 25:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_25;
+            break;
+        case 26:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_26;
+            break;
+        case 27:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_27;
+            break;
+        case 28:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_28;
+            break;
+        case 29:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_29;
+            break;
+        case 30:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_30;
+            break;
+        case 31:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_31;
+            break;
+        case 32:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_32;
+            break;
+        default:
+            temp_enum = ElectraRemoteProtocol::TEMPERATURE::TEMP_24;
+            break;
+        }
 
         this->electraRemoteProtocol.set_temperature(temp_enum);
 
